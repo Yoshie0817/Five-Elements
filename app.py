@@ -189,6 +189,42 @@ def analyze_daily_advice(favorable_element, target_date):
 # 4. Streamlit UI 介面
 # ==========================================
 st.set_page_config(page_title="個人專屬八字喜用與每日水晶指南", layout="wide")
+# ==========================================
+# 自訂 UI 樣式 (調整字型、縮小手機端標題大小)
+# ==========================================
+st.markdown("""
+    <style>
+    /* 引入微軟正黑體或圓潤的繁體中文標準字型 */
+    html, body, [class*="css"] {
+        font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    }
+    
+    /* 主標題 (st.title) 樣式微調：縮小字級、調小行高，適合手機螢幕 */
+    h1 {
+        font-size: 1.8rem !important;
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
+        color: #2C3E50 !important;
+    }
+    
+    /* 副標題 (st.header) 樣式 */
+    h2 {
+        font-size: 1.4rem !important;
+        color: #34495E !important;
+    }
+    
+    /* 小標題 (st.subheader) 樣式 */
+    h3 {
+        font-size: 1.15rem !important;
+    }
+    
+    /* 說明文字字級 */
+    .stCaption {
+        font-size: 0.85rem !important;
+        color: #7F8C8D !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 st.title("🔮 個人專屬八字喜用神與每日水晶穿搭系統")
 st.caption("自動排盤八字四柱、判定日主旺衰與地支合化，並即時結合每日流日干支算出調和色彩與水晶建議")
