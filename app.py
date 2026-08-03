@@ -229,18 +229,46 @@ st.markdown("""
 st.title("🔮 個人專屬八字喜用神與每日水晶穿搭系統")
 st.caption("自動排盤八字四柱、判定日主旺衰與地支合化，並即時結合每日流日干支算出調和色彩與水晶建議")
 
-# 側邊欄：個人八字輸入區
+# ==========================================
+# 側邊欄：個人八字輸入區 (含 5 組常用書籤)
+# ==========================================
 st.sidebar.header("1. 個人出生時間設定")
+
+# 定義 5 組常用生日書籤資料 (可自行修改名稱與預設年月日時)
+BOOKMARKS = {
+    "自訂輸入": {"date": datetime(1975, 1, 1), "time": time(12, 0)},
+    "成員 A (1975 乙卯)": {"date": datetime(1975, 8, 17), "time": time(8, 0)},
+    "成員 B (1977 丁巳)": {"date": datetime(1978, 1, 16), "time": time(10, 0)}, # 示例西曆
+    "成員 C (1942 壬午)": {"date": datetime(1942, 6, 15), "time": time(12, 0)},
+    "成員 D (1947 丁亥)": {"date": datetime(1947, 10, 20), "time": time(14, 0)},
+    "成員 E": {"date": datetime(1990, 1, 1), "time": time(12, 0)}
+}
+
+# 書籤下拉選單
+selected_bookmark = st.sidebar.selectbox("📌 快速選擇預設書籤", list(BOOKMARKS.keys()))
+
+# 根據選擇的書籤自動帶入日期與時間
+default_date = BOOKMARKS[selected_bookmark]["date"]
+default_time = BOOKMARKS[selected_bookmark]["time"]
+
 min_birth_date = datetime(1940, 1, 1)
 max_birth_date = datetime.now()
 
+# 日期與時間選擇器 (可隨時手動微調)
 birth_date = st.sidebar.date_input(
     "出生日期（公曆）",
-    value=datetime(1975, 1, 1),
+    value=default_date,
     min_value=min_birth_date,
-    max_value=max_birth_date
+    max_value=max_birth_date,
+    key=f"birth_date_{selected_bookmark}"  # 加上 key 確保切換書籤時自動更新畫面
 )
-birth_time = st.sidebar.time_input("出生時辰", time(12, 0))
+
+birth_time = st.sidebar.time_input(
+    "出生時辰", 
+    value=default_time,
+    key=f"birth_time_{selected_bookmark}"
+)
+
 birth_dt = datetime.combine(birth_date, birth_time)
 
 # 進行精準八字計算
