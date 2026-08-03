@@ -237,11 +237,11 @@ st.sidebar.header("1. 個人出生時間設定")
 # 定義 5 組常用生日書籤資料 (可自行修改名稱與預設年月日時)
 BOOKMARKS = {
     "自訂輸入": {"date": datetime(1975, 1, 1), "time": time(12, 0)},
-    "成員 A (1975 乙卯)": {"date": datetime(1975, 8, 17), "time": time(8, 0)},
-    "成員 B (1977 丁巳)": {"date": datetime(1978, 1, 16), "time": time(10, 0)}, # 示例西曆
-    "成員 C (1942 壬午)": {"date": datetime(1942, 6, 15), "time": time(12, 0)},
-    "成員 D (1947 丁亥)": {"date": datetime(1947, 10, 20), "time": time(14, 0)},
-    "成員 E": {"date": datetime(1990, 1, 1), "time": time(12, 0)}
+    "Yoshie (1975 乙卯)": {"date": datetime(1975, 8, 17), "time": time(8, 30)},
+    "Irene (1977 丁巳)": {"date": datetime(1977, 1, 26), "time": time(10, 0)}, # 示例西曆
+    "Papa (1942 壬午)": {"date": datetime(1942, 11, 27), "time": time(12, 0)},
+    "Mama (1947 丁亥)": {"date": datetime(1947, 3, 28), "time": time(24, 0)},
+    "Simon (1978 戊午)": {"date": datetime(1978, 10, 25), "time": time(9, 30)}
 }
 
 # 書籤下拉選單
