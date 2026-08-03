@@ -240,7 +240,7 @@ BOOKMARKS = {
     "Yoshie (1975 乙卯)": {"date": datetime(1975, 8, 17), "time": time(8, 30)},
     "Irene (1977 丁巳)": {"date": datetime(1977, 1, 26), "time": time(10, 0)}, # 示例西曆
     "Papa (1942 壬午)": {"date": datetime(1942, 11, 27), "time": time(12, 0)},
-    "Mama (1947 丁亥)": {"date": datetime(1947, 3, 28), "time": time(24, 0)},
+    "Mama (1947 丁亥)": {"date": datetime(1947, 3, 28), "time": time(0, 0)},
     "Simon (1978 戊午)": {"date": datetime(1978, 10, 25), "time": time(9, 30)}
 }
 
