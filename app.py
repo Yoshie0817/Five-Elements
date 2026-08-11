@@ -156,33 +156,77 @@ def calculate_bazi_and_favorable(birth_datetime):
     }
 
 # ==========================================
-# 3. 每日流日運算模組
+# 優化版：干支綜合流日能量分析函數
 # ==========================================
-def analyze_daily_advice(favorable_element, target_date):
-    solar = Solar.fromYmd(target_date.year, target_date.month, target_date.day)
-    lunar = solar.getLunar()
+def analyze_daily_advice_advanced(favorable_element, target_date):
+    """
+    綜合計算流日天干 (40%) 與地支藏幹 (60%) 的能量分佈，
+    並精準比對個人喜用神。
+    """
+    target_solar = Solar.fromYmd(target_date.year, target_date.month, target_date.day)
+    target_lunar = target_solar.getLunar()
     
-    day_gan = lunar.getDayGan()
-    day_zhi = lunar.getDayZhi()
-    day_gan_element = GAN_ELEMENT.get(day_gan, "木")
-
-    if day_gan_element == favorable_element:
-        status_text = f"今日流日天干【{day_gan}】屬【{day_gan_element}】，正是您的喜用五行，氣場極佳！"
-    elif ELEMENT_GENERATE[day_gan_element] == favorable_element:
-        status_text = f"今日流日天干【{day_gan}】屬【{day_gan_element}】，生扶喜用五行，能量順暢。"
-    elif ELEMENT_CONTROL[day_gan_element] == favorable_element:
-        status_text = f"今日流日天干【{day_gan}】屬【{day_gan_element}】，對喜用有克制之象，建議配戴水晶調和。"
+    day_gan = target_lunar.getDayGan()
+    day_zhi = target_lunar.getDayZhi()
+    
+    # 1. 計算流日自身的五行力量分佈
+    daily_element_scores = {"木": 0.0, "火": 0.0, "土": 0.0, "金": 0.0, "水": 0.0}
+    
+    # 天干貢獻 40 分
+    gan_elem = GAN_ELEMENT.get(day_gan, "木")
+    daily_element_scores[gan_elem] += 40.0
+    
+    # 地支藏幹貢獻 60 分 (按本氣/中氣/餘氣比例分配)
+    hidden_list = ZHI_HIDDEN_GAN.get(day_zhi, [("癸", 1.0)])
+    for h_gan, ratio in hidden_list:
+        h_elem = GAN_ELEMENT[h_gan]
+        daily_element_scores[h_elem] += 60.0 * ratio
+        
+    # 取當日最強的主導五行 (Dominant Element)
+    dominant_element = max(daily_element_scores, key=daily_element_scores.get)
+    dominant_score = round(daily_element_scores[dominant_element], 1)
+    
+    # 2. 分析流日主導氣場對個人喜用神 (favorable_element) 的生剋影響
+    if dominant_element == favorable_element:
+        status_text = (
+            f"今日干支【{day_gan}{day_zhi}】主導能量為【{dominant_element}】（佔 {dominant_score}%），"
+            f"正是您的本命喜用五行，整體氣場共振極佳！"
+        )
+    elif ELEMENT_GENERATE[dominant_element] == favorable_element:
+        status_text = (
+            f"今日干支【{day_gan}{day_zhi}】主導能量為【{dominant_element}】（天干{gan_elem}/地支藏幹氣盛），"
+            f"能順勢生扶您的喜用【{favorable_element}】，能量順暢有助益。"
+        )
+    elif ELEMENT_RESTORE[dominant_element] == favorable_element:
+        status_text = (
+            f"今日干支【{day_gan}{day_zhi}】主導能量為【{dominant_element}】，"
+            f"會洩耗您的喜用【{favorable_element}】氣場，建議加強對應配件以穩定能量。"
+        )
+    elif ELEMENT_CONTROL[dominant_element] == favorable_element:
+        status_text = (
+            f"今日干支【{day_gan}{day_zhi}】主導能量為【{dominant_element}】，"
+            f"對您的喜用【{favorable_element}】有強烈克制之象，需配戴專屬水晶進行通關與防護。"
+        )
     else:
-        status_text = f"今日流日干支為【{day_gan}{day_zhi}】，能量平穩，保持日常能量補充即可。"
+        status_text = (
+            f"今日干支【{day_gan}{day_zhi}】氣場以【{dominant_element}】為主，"
+            f"與喜用神關係平穩，維持日常能量補充即可。"
+        )
 
     info = ELEMENT_MAPPING[favorable_element]
+    
+    # 生成地支藏幹文字說明 (例：午藏丁火、己土)
+    hidden_str = "、".join([f"{g}{GAN_ELEMENT[g]}" for g, _ in hidden_list])
+
     return {
         "day_gz": f"{day_gan}{day_zhi}",
-        "day_element": day_gan_element,
+        "day_gan_elem": gan_elem,
+        "day_zhi_info": hidden_str,
+        "dominant_element": dominant_element,
         "status_text": status_text,
         "suggest_color": info["color"],
         "suggest_direction": info["direction"],
-        "suggest_crystals": "、".join(info["crystals"])
+        "suggest_crystals": info["crystals"]
     }
 
 # ==========================================
