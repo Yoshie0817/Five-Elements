@@ -334,12 +334,39 @@ st.sidebar.success(f"**建議核心喜用神**：【{bazi_result['favorable_elem
 st.header("2. 每日能量運勢與調和指南")
 query_date = st.date_input("選擇查詢日期", datetime.now())
 
+# ----------------------------------------------------
+# 新版的程式碼（展示完整的干支與藏幹資訊）：
+# ----------------------------------------------------
 if st.button("計算本日能量建議", type="primary"):
+    # 1. 取得自動算出的喜用神
     favorable = bazi_result['favorable_element']
-    daily_res = analyze_daily_advice(favorable, query_date)
+    
+    # 2. 呼叫幹支綜合演算法
+    daily_res = analyze_daily_advice_advanced(favorable, query_date)
     
     st.subheader(f"📅 {query_date.strftime('%Y-%m-%d')} 能量解析")
-    st.info(f"今日流日干支：**{daily_res['day_gz']}**（天干屬 **{daily_res['day_element']}**）\n\n{daily_res['status_text']}")
+    
+    # 3. 顯示包含天干與地支藏幹的完整卡片
+    st.info(
+        f"今日流日干支：**{daily_res['day_gz']}** "
+        f"（天干屬 **{daily_res['day_gan_elem']}**，地支藏幹：**{daily_res['day_zhi_info']}**）\n\n"
+        f"{daily_res['status_text']}"
+    )
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="🎨 建議穿搭/配件顏色", value=daily_res["suggest_color"])
+    with col2:
+        st.metric(label="🧭 每日吉利方位", value=daily_res["suggest_direction"])
+    with col3:
+        st.metric(label="🌟 本命喜用補益", value=f"補充【{favorable}】能量")
+        
+    st.markdown("---")
+    st.markdown("### 💎 推薦佩戴水晶種類")
+    
+    # 將陣列轉為字串呈現
+    crystals_text = "、".join(daily_res["suggest_crystals"])
+    st.success(crystals_text)
     
     col1, col2, col3 = st.columns(3)
     with col1:
